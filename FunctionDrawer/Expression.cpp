@@ -35,12 +35,14 @@ auto Function::Expression::ComputeExpression(float left, float right, char op) -
 Function::Expression::Expression(std::string value)
 {
 	src = value;
+	IsExpression = false;
+	ExpressionQueue = ToExpressionQueue();
 }
 
 
 
-#define STACKDEBUG if (Stack.empty()){std::cout<<"Error: Expression Is Not Right"<<std::endl; return queue<string>();};
-#define OUTDEBUG if (Stack.top()=='('){std::cout<<"Error: Expression Is Not Right"<<std::endl; return queue<string>();};
+#define STACKDEBUG if (Stack.empty()){std::cout<<"Error: Expression Is Not Right"<<std::endl; IsExpression=false; return queue<string>();};
+#define OUTDEBUG if (Stack.top()=='('){std::cout<<"Error: Expression Is Not Right"<<std::endl; IsExpression=false; return queue<string>();};
 
 
 
@@ -87,6 +89,7 @@ auto Function::Expression::ToExpressionQueue() -> queue<string>
 		out.push(op);
 		Stack.pop();
 	}
+	IsExpression = true;
 	return out;
 }
 
@@ -95,12 +98,13 @@ auto Function::Expression::ToExpressionQueue() -> queue<string>
 #undef OUTDEBUG
 
 
-#define EXPRESSIONDEBUG {std::cout<<"Error: Expression Is Not Right."<<std::endl; return NAN;}
+#define EXPRESSIONDEBUG {std::cout<<"GetValue: Expression Is Not Right."<<std::endl; IsExpression=false; return NAN;}
 
 auto Function::Expression::ToValue(float x) -> float
 {
+	if (!IsExpression) return false;
 	stack<float> Stack;
-	queue<string> ExpressionQueue = ToExpressionQueue();
+	queue<string> ExpressionQueue = this->ExpressionQueue;
 	if (ExpressionQueue.empty()) EXPRESSIONDEBUG;
 	while (!ExpressionQueue.empty()) {
 		string value = ExpressionQueue.front();
@@ -121,6 +125,7 @@ auto Function::Expression::ToValue(float x) -> float
 	}
 
 	if (Stack.size() > 1) EXPRESSIONDEBUG;
+	IsExpression = true;
 	return Stack.top();
 	
 }

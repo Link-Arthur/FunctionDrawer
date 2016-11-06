@@ -11,7 +11,7 @@ namespace Function {
 	private:
 		Expression* expression;
 	public:
-		Function() = default;
+		Function();
 
 		void Set(string str);
 

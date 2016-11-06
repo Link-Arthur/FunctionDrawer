@@ -25,23 +25,20 @@ void Function::MainPage::ComputeFunction()
 		str += (char)(TextBox[i]);
 	function.Set(str);
 	if (!function.IsExpression()) return;
-
+	ClearSurfaceAndRenderAxis();
+	function.DrawSelf(Surface);
 }
 
 void Function::MainPage::ClearSurfaceAndRenderAxis()
 {
-	int width = Surface->GetWidth();
-	int height = Surface->GetHieght();
+	float width = Surface->GetWidth();
+	float height = Surface->GetHieght();
 	ASNET::Graph::Size origin = D2D1::SizeF(width / 2.f, height / 2.f);
-	for (int i = 1; i <= width; i++) {
-		for (int j = 1; j <= height; j++) {
-			Surface->SetPixel(i, j, D2D1::ColorF::White);
-		}
-	}
+	Surface->Clear();
 	for (int i = 1; i <= width; i++)
-		Surface->SetPixel(i, origin.height, D2D1::ColorF::Black);
+		Surface->SetPixel(i, (int)origin.height, D2D1::ColorF::Black);
 	for (int i = 1; i <= height; i++)
-		Surface->SetPixel(origin.width, i, D2D1::ColorF::Black);
+		Surface->SetPixel((int)origin.width, i, D2D1::ColorF::Black);
 	Surface->Flush();
 }
 
@@ -63,19 +60,17 @@ auto Function::MainPage::FloatToString(float value) -> std::wstring
 void Function::MainPage::OnInitalize(void * sender)
 {
 	ParentGraph->LoadFont(Consolas, L"Consolas", fontsize);
-	ParentGraph->LoadImageSurface(D2D1::SizeF(realwidth, realheight), Surface);
+	ParentGraph->LoadImageSurface(D2D1::SizeF((float)width, (float)height), Surface);
 
 }
 
 void Function::MainPage::OnDraw(void * sender, ASNET::Graph::Direct3D::GraphDirect3D * graph)
 {
-	ClearSurfaceAndRenderAxis();
-	function.DrawSelf(Surface);
-	graph->DrawImageSurface(Surface, D2D1::RectF(0, 0, realwidth, realheight));
+	graph->DrawImageSurface(Surface, D2D1::RectF(0, 0, (float)width, (float)height));
 	std::wstring OutBox = L"Function: " + TextBox;
 	std::wstring FPSBox = L"FPS: " + FloatToString(graph->FPS());
 	graph->DrawWord(OutBox, D2D1::RectF(0, 0, (float)OutBox.length() * 7.f, fontsize), Consolas);
-	graph->DrawWord(FPSBox, D2D1::RectF(0, realheight - fontsize, (float)FPSBox.length()*7.f, realheight), Consolas);
+	graph->DrawWord(FPSBox, D2D1::RectF(0, (float)height - fontsize, (float)FPSBox.length()*7.f, (float)height), Consolas);
 }
 
 void Function::MainPage::OnKeyDown(void * sender, ASNET::Event::EventBoardClick * e)

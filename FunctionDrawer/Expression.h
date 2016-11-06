@@ -54,6 +54,8 @@ namespace Function {
 	class Expression {
 	private:
 		std::string src;
+		queue<string> ExpressionQueue;
+		bool IsExpression;
 
 		friend class Function;
 
