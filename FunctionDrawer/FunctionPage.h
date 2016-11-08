@@ -27,7 +27,6 @@ namespace Function {
 	private:
 		//Resource
 		ASNET::Graph::Font* Consolas;
-		ASNET::Graph::ImageSurface* Surface;
 	private:
 		bool     IsCapsLock;
 		bool     IsShift;

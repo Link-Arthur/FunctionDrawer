@@ -25,21 +25,12 @@ void Function::MainPage::ComputeFunction()
 		str += (char)(TextBox[i]);
 	function.Set(str);
 	if (!function.IsExpression()) return;
-	ClearSurfaceAndRenderAxis();
-	function.DrawSelf(Surface);
+	function.ComputePoints(D2D1::SizeF((float)width, (float)height));
 }
 
 void Function::MainPage::ClearSurfaceAndRenderAxis()
 {
-	float width = Surface->GetWidth();
-	float height = Surface->GetHieght();
-	ASNET::Graph::Size origin = D2D1::SizeF(width / 2.f, height / 2.f);
-	Surface->Clear();
-	for (int i = 1; i <= width; i++)
-		Surface->SetPixel(i, (int)origin.height, D2D1::ColorF::Black);
-	for (int i = 1; i <= height; i++)
-		Surface->SetPixel((int)origin.width, i, D2D1::ColorF::Black);
-	Surface->Flush();
+	
 }
 
 auto Function::MainPage::FloatToString(float value) -> std::wstring
@@ -60,13 +51,12 @@ auto Function::MainPage::FloatToString(float value) -> std::wstring
 void Function::MainPage::OnInitalize(void * sender)
 {
 	ParentGraph->LoadFont(Consolas, L"Consolas", fontsize);
-	ParentGraph->LoadImageSurface(D2D1::SizeF((float)width, (float)height), Surface);
-
+	ClearSurfaceAndRenderAxis();
 }
 
 void Function::MainPage::OnDraw(void * sender, ASNET::Graph::Direct3D::GraphDirect3D * graph)
 {
-	graph->DrawImageSurface(Surface, D2D1::RectF(0, 0, (float)width, (float)height));
+	function.Draw(graph);
 	std::wstring OutBox = L"Function: " + TextBox;
 	std::wstring FPSBox = L"FPS: " + FloatToString(graph->FPS());
 	graph->DrawWord(OutBox, D2D1::RectF(0, 0, (float)OutBox.length() * 7.f, fontsize), Consolas);

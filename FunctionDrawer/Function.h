@@ -5,12 +5,16 @@
 
 namespace Function {
 
-	static float Block = 0.02f;
+	static float WidthBlock = 0.02f;
+	static float HeightBlock = 0.02f;
 
 	class Function {
 	private:
 		Expression* expression;
+		std::vector<ASNET::Graph::Point> points;
 	public:
+		
+
 		Function();
 
 		void Set(string str);
@@ -19,7 +23,9 @@ namespace Function {
 
 		bool IsExpression();
 
-		void DrawSelf(ASNET::Graph::ImageSurface* Surface);
+		void ComputePoints(ASNET::Graph::Size target);
+
+		void Draw(ASNET::Graph::Direct3D::GraphDirect3D* graph);
 	};
 
 }

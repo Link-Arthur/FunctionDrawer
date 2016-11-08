@@ -22,17 +22,32 @@ bool Function::Function::IsExpression()
 	return expression->IsExpression;
 }
 
-
-void Function::Function::DrawSelf(ASNET::Graph::ImageSurface * Surface)
+void Function::Function::ComputePoints(ASNET::Graph::Size target)
 {
-	float width = Surface->GetWidth();
-	float heigh = Surface->GetHieght();
-	ASNET::Graph::Size origin = D2D1::SizeF(width / 2.f, heigh / 2.f);
-	//enum the pixel 
-	if (!IsExpression()) return;
-	for (int i = 1; i <= width; i++) {
-		Surface->SetPixel(i, Ans(i), D2D1::ColorF::Red);
+	//one points 
+	points.clear();
+	//points.push_back(D2D1::Point2F(-1, Ans(-1)/HeightBlock));
+	for (size_t i = 0; i <= target.width; i++) {
+		float realx = (float)i;
+		float realy = Ans(realx*WidthBlock)/HeightBlock;
+		points.push_back(D2D1::Point2F(realx, realy));
+		if (realy > target.height) break;
+		if (realy < 0) break;
 	}
-	//what can i write ?
-	Surface->Flush();
 }
+
+
+
+
+
+
+void Function::Function::Draw(ASNET::Graph::Direct3D::GraphDirect3D * graph)
+{
+	if (!IsExpression()) return;
+
+	for (size_t i = 1; i < points.size(); i++) {
+		graph->DrawLine(points[i - 1], points[i], D2D1::ColorF::Red, 4);
+	}
+
+}
+
